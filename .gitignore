@@ -1,0 +1,8 @@
+/node_modules
+.docker
+dist
+
+.env
+.env.development
+.env.production
+.env.test
