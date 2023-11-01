@@ -7,10 +7,13 @@ services:
     container_name: banco-simplificado
     ports:
       - "3000:3000"
+      - "5555:5555"
     volumes:
       - .:/home/node/app
     depends_on:
       - db
+    networks:
+      - custom-network
 
   db:
     build: .docker/postgres
@@ -25,3 +28,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: banco-simplificado
+    networks:
+      - custom-network
+
+networks:
+  custom-network:

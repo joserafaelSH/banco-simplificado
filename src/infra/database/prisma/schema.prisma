@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String        @id @default(uuid())
+  fullName             String
+  cpf                  String        @unique
+  email                String        @unique
+  type                 UserType
+  amount               Float
+  sentTransactions     Transaction[] @relation("sender")
+  receivedTransactions Transaction[] @relation("receiver")
+
+  @@map("users")
+}
+
+enum UserType {
+  COMMON_USER
+  SHOPKEEPER
+}
+
+model Transaction {
+  id         String            @id @default(uuid())
+  senderId   String
+  receiverId String
+  value      Float
+  status     TransactionStatus
+  notified   Boolean           @default(false)
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
+
+  sender   User @relation("sender", fields: [senderId], references: [id])
+  receiver User @relation("receiver", fields: [receiverId], references: [id])
+
+  @@map("transactions")
+}
+
+enum TransactionStatus {
+  PENDING
+  APPROVED
+  REPROVED
+}
